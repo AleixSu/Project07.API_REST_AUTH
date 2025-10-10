@@ -12,7 +12,7 @@ Permite crear, leer, actualizar y eliminar entidades, con un sistema de **roles 
 
    ```bash
    git clone <repo-url>
-   cd nightworld-api
+   cd <repo-folder>
    ```
 
 2. Instala dependencias:
@@ -67,12 +67,12 @@ Base: `/api/v1/species`
 
 Base: `/api/v1/kings`
 
-| Método | Endpoint | Descripción                      |
-| ------ | -------- | -------------------------------- |
-| GET    | `/`      | Obtiene todos los reyes alfa.    |
-| POST   | `/`      | Crea un nuevo rey alfa.          |
-| PATCH  | `/:id`   | Actualiza un rey alfa existente. |
-| DELETE | `/:id`   | Elimina un rey alfa.             |
+| Método | Endpoint | Descripción                 |
+| ------ | -------- | --------------------------- |
+| GET    | `/`      | Obtiene todos los reyes.    |
+| POST   | `/`      | Crea un nuevo rey.          |
+| PATCH  | `/:id`   | Actualiza un rey existente. |
+| DELETE | `/:id`   | Elimina un rey.             |
 
 #### Ejemplo de body para POST
 
