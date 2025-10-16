@@ -17,7 +17,7 @@ const launchSeed = async (array1, array2, array3) => {
     console.log('Database connection established')
 
     await array1.model.deleteMany({})
-    console.log('Old videogames collection removed from database')
+    console.log('Old specie collection removed from database')
     const insertedSpecies = await array1.model.insertMany(array1.array)
 
     console.log(`${array1.name} succesfully seeded`)
