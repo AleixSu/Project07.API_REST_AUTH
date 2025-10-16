@@ -1,4 +1,5 @@
 const Converted = require('../api/models/converted')
+const WorldCreator = require('../api/models/worldCreator')
 const { verifyJwt } = require('../utils/token/jwt')
 
 const isAuth = async (req, res, next) => {
@@ -13,7 +14,7 @@ const isAuth = async (req, res, next) => {
     req.user = converted
     next()
   } catch (error) {
-    return res.status(401).json('You have no power here5')
+    return res.status(401).json('You have no power here')
   }
 }
 
@@ -31,10 +32,10 @@ const isConvertedUser = async (req, res, next) => {
       req.user = converted
       next()
     } else {
-      return res.status(401).json('You have no power here3')
+      return res.status(401).json('You have no power here')
     }
   } catch (error) {
-    return res.status(401).json('You have no power here4')
+    return res.status(401).json('You have no power here')
   }
 }
 const isAlphaAdmin = async (req, res, next) => {
@@ -51,10 +52,10 @@ const isAlphaAdmin = async (req, res, next) => {
       req.user = converted
       next()
     } else {
-      return res.status(401).json('You have no power here2')
+      return res.status(401).json('You have no power here')
     }
   } catch (error) {
-    return res.status(401).json('You have no power here1')
+    return res.status(401).json('You have no power here')
   }
 }
 
@@ -65,17 +66,17 @@ const isWorldCreator = async (req, res, next) => {
 
     const { id } = verifyJwt(parsedToken)
 
-    const converted = await Converted.findById(id)
+    const worldCreator = await WorldCreator.findById(id)
 
-    if (converted.role === 'worldCreator') {
-      converted.password = null
-      req.user = converted
+    if (worldCreator.role === 'worldCreator') {
+      worldCreator.password = null
+      req.user = worldCreator
       next()
     } else {
-      return res.status(401).json('You have no power here22')
+      return res.status(401).json('You have no power here')
     }
   } catch (error) {
-    return res.status(401).json('You have no power here11')
+    return res.status(401).json('You have no power here')
   }
 }
 
@@ -85,7 +86,7 @@ const allowRoles =
     if (roles.includes(req.user.role)) {
       return next()
     } else {
-      return res.status(401).json('You have no power here33')
+      return res.status(401).json('You have no power here')
     }
   }
 module.exports = {

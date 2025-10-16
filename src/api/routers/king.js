@@ -8,7 +8,7 @@ const {
 
 const kingsRoutes = require('express').Router()
 
-kingsRoutes.get('/', getKings)
+kingsRoutes.get('/', isWorldCreator, getKings)
 kingsRoutes.post('/', isWorldCreator, postKing)
 kingsRoutes.patch('/:id', isWorldCreator, updateKing)
 kingsRoutes.delete('/:id', isWorldCreator, deleteKing)

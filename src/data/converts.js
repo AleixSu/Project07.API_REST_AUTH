@@ -1,6 +1,6 @@
 const converts = [
   {
-    userName: 'Lucien Nocturne',
+    userName: 'Lucien Nocturne', //alphaAdmin
     password: 'bloodmoon123',
     king: 'Vlad Dracul',
     specie: 'Vampires'
@@ -13,7 +13,7 @@ const converts = [
   },
 
   {
-    userName: 'Ragnar Clawfang',
+    userName: 'Ragnar Clawfang', //alphaAdmin
     password: 'fullmoon789',
     king: 'Fenrir Odinson',
     specie: 'Werewolves'
@@ -26,7 +26,7 @@ const converts = [
   },
 
   {
-    userName: 'Ezekiel Marrow',
+    userName: 'Ezekiel Marrow', //alphaAdmin
     password: 'graveborn654',
     king: 'Morvath the Devourer',
     specie: 'Ghouls'

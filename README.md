@@ -2,7 +2,8 @@
 
 API REST construida con **Node.js**, **Express** y **MongoDB (Mongoose)** para la gestión de razas, líderes (reyes alfa) y convertidos dentro de un mundo oscuro de criaturas como vampiros, hombres lobo y necrófagos.
 
-Permite crear, leer, actualizar y eliminar entidades, con un sistema de **roles y autenticación mediante JWT**, donde los líderes pueden crear y administrar convertidos dentro de su misma especie.
+Permite crear, leer, actualizar y eliminar entidades, con un sistema de **roles y autenticación mediante JWT**, donde los líderes pueden crear y administrar convertidos dentro de su misma especie.  
+Incluye también el rol supremo **worldCreator**, capaz de alterar cualquier colección o registro.
 
 ---
 
@@ -11,17 +12,22 @@ Permite crear, leer, actualizar y eliminar entidades, con un sistema de **roles 
 1. Clona el repositorio:
 
    ```bash
-   git clone <repo-url>
-   cd <repo-folder>
+   git clone https://github.com/AleixSu/Project07.API_REST_AUTH.git
    ```
 
-2. Instala dependencias:
+2. Accede al directorio del proyecto:
+
+   ```bash
+   cd Project07.API_REST_AUTH
+   ```
+
+3. Instala dependencias:
 
    ```bash
    npm install
    ```
 
-3. Configura las variables de entorno en un archivo `.env`:
+4. Configura las variables de entorno en un archivo `.env`:
 
    ```env
    DB_URL=mongodb+srv://<USER>:<PASSWORD>@cluster.mongodb.net/nightworldDB
@@ -29,7 +35,7 @@ Permite crear, leer, actualizar y eliminar entidades, con un sistema de **roles 
    PORT=3000
    ```
 
-4. Inicia el servidor:
+5. Inicia el servidor:
    ```bash
    npm run dev
    ```
@@ -44,12 +50,12 @@ Permite crear, leer, actualizar y eliminar entidades, con un sistema de **roles 
 
 Base: `/api/v1/species`
 
-| Método | Endpoint | Descripción                      |
-| ------ | -------- | -------------------------------- |
-| GET    | `/`      | Obtiene todas las especies.      |
-| POST   | `/`      | Crea una nueva especie.          |
-| PATCH  | `/:id`   | Actualiza una especie existente. |
-| DELETE | `/:id`   | Elimina una especie.             |
+| Método | Endpoint | Descripción                      | Acceso                       |
+| ------ | -------- | -------------------------------- | ----------------------------- |
+| GET    | `/`      | Obtiene todas las especies.      | `alphaAdmin`, `worldCreator`  |
+| POST   | `/`      | Crea una nueva especie.          | `worldCreator`                |
+| PATCH  | `/:id`   | Actualiza una especie existente. | `worldCreator`                |
+| DELETE | `/:id`   | Elimina una especie.             | `worldCreator`                |
 
 #### Ejemplo de body para POST
 
@@ -67,12 +73,12 @@ Base: `/api/v1/species`
 
 Base: `/api/v1/kings`
 
-| Método | Endpoint | Descripción                 |
-| ------ | -------- | --------------------------- |
-| GET    | `/`      | Obtiene todos los reyes.    |
-| POST   | `/`      | Crea un nuevo rey.          |
-| PATCH  | `/:id`   | Actualiza un rey existente. |
-| DELETE | `/:id`   | Elimina un rey.             |
+| Método | Endpoint | Descripción                 | Acceso                      |
+| ------ | -------- | --------------------------- | ---------------------------- |
+| GET    | `/`      | Obtiene todos los reyes.    | `alphaAdmin`, `worldCreator` |
+| POST   | `/`      | Crea un nuevo rey.          | `worldCreator`               |
+| PATCH  | `/:id`   | Actualiza un rey existente. | `worldCreator`               |
+| DELETE | `/:id`   | Elimina un rey.             | `worldCreator`               |
 
 #### Ejemplo de body para POST
 
@@ -88,18 +94,18 @@ Base: `/api/v1/kings`
 
 ### Converts
 
-Base: `/api/v1/converted`
+Base: `/api/v1/converts`
 
-| Método | Endpoint            | Descripción                                                                     |
-| ------ | ------------------- | ------------------------------------------------------------------------------- |
-| GET    | `/`                 | Obtiene todos los convertidos (populate con especie y rey).                     |
-| GET    | `/kingArmy/:king`   | Obtiene todos los convertidos pertenecientes a un rey.                          |
-| GET    | `/:id`              | Obtiene un convertido por su ID.                                                |
-| POST   | `/register`         | Crea un nuevo convertido (solo usuarios autenticados).                          |
-| POST   | `/register/byAdmin` | Crea un nuevo convertido (solo administradores).                                |
-| POST   | `/login`            | Inicia sesión y devuelve el token JWT.                                          |
-| PATCH  | `/:id`              | Actualiza datos de un convertido (el propio usuario o un admin pueden hacerlo). |
-| DELETE | `/:id`              | Elimina un usuario (el propio convertido o un admin pueden hacerlo).            |
+| Método | Endpoint            | Descripción                                                                     | Acceso                                       |
+| ------ | ------------------- | ------------------------------------------------------------------------------- | -------------------------------------------- |
+| GET    | `/`                 | Obtiene todos los convertidos (populate con especie y rey).                     | `alphaAdmin`, `worldCreator`                 |
+| GET    | `/kingArmy/:king`   | Obtiene todos los convertidos pertenecientes a un rey.                          | `alphaAdmin`, `worldCreator`, `convertedUser`|
+| GET    | `/:id`              | Obtiene un convertido por su ID.                                                | Propietario, `alphaAdmin`, `worldCreator`    |
+| POST   | `/register`         | Crea un nuevo convertido (solo usuarios autenticados).                          | `convertedUser`, `alphaAdmin`, `worldCreator`|
+| POST   | `/register/byAdmin` | Crea un nuevo convertido (solo administradores).                                | `alphaAdmin`, `worldCreator`                 |
+| POST   | `/login`            | Inicia sesión y devuelve el token JWT.                                          | Libre                                        |
+| PATCH  | `/:id`              | Actualiza datos de un convertido (el propio usuario o un admin pueden hacerlo). | Propietario, `alphaAdmin`, `worldCreator`    |
+| DELETE | `/:id`              | Elimina un usuario (el propio convertido o un admin pueden hacerlo).            | Propietario, `alphaAdmin`, `worldCreator`    |
 
 #### Ejemplo de body para registro
 
@@ -112,11 +118,31 @@ Base: `/api/v1/converted`
 
 ---
 
+### WorldCreator
+
+Base: `/api/v1/worldCreators`
+
+| Método | Endpoint | Descripción                            | Acceso         |
+| ------ | -------- | -------------------------------------- | --------------- |
+| GET    | `/`      | Obtiene los perfiles worldCreator.     | `worldCreator` |
+| POST   | `/login` | Inicia sesión y genera token JWT.      | Libre          |
+
+#### Ejemplo de body para login
+
+```json
+{
+  "userName": "Aetherion",
+  "password": "GenesisCore123"
+}
+```
+
+---
+
 ## Roles y Autenticación
 
-- **convertedUser**: puede crear nuevos usuarios de su misma especie.
-- **alphaAdmin**: puede crear, modificar o eliminar cualquier usuario.
-- **worldCreator**: rol reservado para el creador del mundo (configuración inicial).
+- **convertedUser** → Puede crear nuevos usuarios de su misma especie.  
+- **alphaAdmin** → Puede crear, modificar o eliminar cualquier usuario.  
+- **worldCreator** → Rol supremo, puede alterar cualquier colección o entidad.
 
 Los tokens JWT se generan al iniciar sesión y deben incluirse en el header:
 
@@ -128,11 +154,11 @@ Authorization: Bearer <token>
 
 ## Tecnologías usadas
 
-- Node.js + Express
-- MongoDB + Mongoose
-- bcrypt
-- dotenv
-- jsonwebtoken
+- Node.js + Express  
+- MongoDB + Mongoose  
+- bcrypt  
+- dotenv  
+- jsonwebtoken  
 - nodemon (dev)
 
 ---
@@ -164,6 +190,13 @@ erDiagram
         ObjectId specie
     }
 
+    WorldCreator {
+        ObjectId _id
+        string userName
+        string password
+        string role
+    }
+
     Species ||--o{ Kings: "has many"
     Kings ||--o{ Converts : "commands"
     Species ||--o{ Converts : "belongs to"
@@ -171,9 +204,21 @@ erDiagram
 
 ---
 
-## Testing con Postman/Insomnia
+## Manejo de rutas no especificadas
 
-1. Inicia el servidor con `npm run dev`.
-2. Registra un `worldCreator` directamente en la base de datos.
-3. Usa su token para crear especies, reyes y primeros convertidos.
+El servidor maneja rutas inexistentes con un middleware global que devuelve un 404:
+
+```js
+app.use('*', (req, res) => {
+  res.status(404).json({ error: 'Route not found' })
+})
+```
+
+---
+
+## Testing con Postman / Insomnia
+
+1. Inicia el servidor con `npm run dev`.  
+2. Registra un `worldCreator` directamente desde el seed.  
+3. Usa su token para crear especies, reyes y primeros convertidos.  
 4. Valida permisos entre roles con distintos tokens.
