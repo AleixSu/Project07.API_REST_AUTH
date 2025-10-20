@@ -2,8 +2,10 @@
 
 API REST construida con **Node.js**, **Express** y **MongoDB (Mongoose)** para la gestión de razas, líderes (reyes alfa) y convertidos dentro de un mundo oscuro de criaturas como vampiros, hombres lobo y necrófagos.
 
-Permite crear, leer, actualizar y eliminar entidades, con un sistema de **roles y autenticación mediante JWT**, donde los líderes pueden crear y administrar convertidos dentro de su misma especie.  
-Incluye también el rol supremo **worldCreator**, capaz de alterar cualquier colección o registro.
+Permite crear, leer, actualizar y eliminar entidades, con un sistema de **roles y autenticación mediante JWT**.
+
+Los líderes son los **Alpha**. Estos pueden alterar los roles de los convertidos dentro de su misma especie.  
+Los reyes son escogidos solo por el **WorldCreator**, que es un rol supremo capaz de alterar cualquier colección o registro.
 
 ---
 
