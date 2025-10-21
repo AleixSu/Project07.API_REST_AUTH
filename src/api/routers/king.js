@@ -1,4 +1,4 @@
-const { isWorldCreator } = require('../../middlewares/auth')
+const { isWorldCreator, allowRoles, isAuth } = require('../../middlewares/auth')
 const {
   getKings,
   postKing,
@@ -8,9 +8,9 @@ const {
 
 const kingsRoutes = require('express').Router()
 
-kingsRoutes.get('/', isWorldCreator, getKings)
-kingsRoutes.post('/', isWorldCreator, postKing)
-kingsRoutes.patch('/:id', isWorldCreator, updateKing)
-kingsRoutes.delete('/:id', isWorldCreator, deleteKing)
+kingsRoutes.get('/', getKings)
+kingsRoutes.post('/', [isAuth, allowRoles('worldCreator')], postKing)
+kingsRoutes.patch('/:id', [isAuth, allowRoles('worldCreator')], updateKing)
+kingsRoutes.delete('/:id', [isAuth, allowRoles('worldCreator')], deleteKing)
 
 module.exports = kingsRoutes

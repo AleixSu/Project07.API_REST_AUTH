@@ -11,7 +11,10 @@ const getUsers = async (req, res, next) => {
       return res.status(200).json(users)
     }
   } catch (error) {
-    return res.status(400).json(error)
+    console.log(error)
+    return res
+      .status(400)
+      .json('Something went wrong. Our most sincere apology')
   }
 }
 
@@ -27,7 +30,10 @@ const getUserByID = async (req, res, next) => {
       return res.status(200).json(user)
     }
   } catch (error) {
-    return res.status(400).json(error)
+    console.log(error)
+    return res
+      .status(400)
+      .json('Something went wrong. Our most sincere apology')
   }
 }
 
@@ -43,7 +49,10 @@ const getKingArmy = async (req, res, next) => {
       return res.status(200).json(army)
     }
   } catch (error) {
-    return res.status(400).json(error)
+    console.log(error)
+    return res
+      .status(400)
+      .json('Something went wrong. Our most sincere apology')
   }
 }
 
@@ -67,7 +76,10 @@ const register = async (req, res, next) => {
       return res.status(201).json(userSaved)
     }
   } catch (error) {
-    return res.status(400).json(error)
+    console.log(error)
+    return res
+      .status(400)
+      .json('Something went wrong. Our most sincere apology')
   }
 }
 
@@ -87,7 +99,10 @@ const registerByAdmin = async (req, res, next) => {
     const userSaved = await newUser.save()
     return res.status(201).json(userSaved)
   } catch (error) {
-    return res.status(400).json(error)
+    console.log(error)
+    return res
+      .status(400)
+      .json('Something went wrong. Our most sincere apology')
   }
 }
 
@@ -106,7 +121,10 @@ const login = async (req, res, next) => {
       return res.status(400).json('User or password incorrect')
     }
   } catch (error) {
-    return res.status(400).json(error)
+    console.log(error)
+    return res
+      .status(400)
+      .json('Something went wrong. Our most sincere apology')
   }
 }
 
@@ -115,12 +133,12 @@ const updateConverted = async (req, res, next) => {
     const { id } = req.params
 
     if (req.user._id.toString() !== id && req.user.role !== 'alphaAdmin') {
-      return res.status(401).json('You have no power here123')
+      return res.status(401).json('You have no power here')
     }
 
-    const updateData = {
-      userName: req.body.userName,
-      password: req.body.password
+    const updateData = { userName: req.body.userName }
+    if (req.body.password) {
+      updateData.password = bcrypt.hashSync(req.body.password, 10)
     }
 
     if (req.user.role === 'alphaAdmin' && req.body.role) {
@@ -135,7 +153,10 @@ const updateConverted = async (req, res, next) => {
 
     return res.status(200).json(convertedUpdated)
   } catch (error) {
-    return res.status(400).json(error)
+    console.log(error)
+    return res
+      .status(400)
+      .json('Something went wrong. Our most sincere apology')
   }
 }
 
@@ -150,7 +171,10 @@ const deleteConverted = async (req, res, next) => {
       return res.status(401).json('You have no power here456')
     }
   } catch (error) {
-    return res.status(400).json(error)
+    console.log(error)
+    return res
+      .status(400)
+      .json('Something went wrong. Our most sincere apology')
   }
 }
 

@@ -1,9 +1,9 @@
 # NightWorld API
 
-API REST construida con **Node.js**, **Express** y **MongoDB (Mongoose)** para la gestión de razas, líderes (reyes alfa) y convertidos dentro de un mundo oscuro de criaturas como vampiros, hombres lobo y necrófagos.
+API REST construida con **Node.js**, **Express** y **MongoDB (Mongoose)** para la gestión de especies, reyes y convertidos dentro de un mundo oscuro de criaturas como vampiros, hombres lobo y necrófagos.
 
-Permite crear, leer, actualizar y eliminar entidades, con un sistema de **roles y autenticación mediante JWT**, donde los líderes pueden crear y administrar convertidos dentro de su misma especie.  
-Incluye también el rol supremo **worldCreator**, capaz de alterar cualquier colección o registro.
+Permite crear, leer, actualizar y eliminar entidades, con un sistema de **roles y autenticación mediante JWT**, donde dependiendo del rol de usuario (converted) o administrador (alpha) pueden crear y administrar convertidos dentro de su misma especie.  
+Incluye también el rol supremo **worldCreator**, capaz de manipular especies y reyes. Este no es capaz de alterar la colección de convertidos.
 
 ---
 
@@ -50,12 +50,12 @@ Incluye también el rol supremo **worldCreator**, capaz de alterar cualquier col
 
 Base: `/api/v1/species`
 
-| Método | Endpoint | Descripción                      | Acceso                       |
-| ------ | -------- | -------------------------------- | ---------------------------- |
-| GET    | `/`      | Obtiene todas las especies.      | `alphaAdmin`, `worldCreator` |
-| POST   | `/`      | Crea una nueva especie.          | `worldCreator`               |
-| PATCH  | `/:id`   | Actualiza una especie existente. | `worldCreator`               |
-| DELETE | `/:id`   | Elimina una especie.             | `worldCreator`               |
+| Método | Endpoint | Descripción                      | Acceso         |
+| ------ | -------- | -------------------------------- | -------------- |
+| GET    | `/`      | Obtiene todas las especies.      | Libre          |
+| POST   | `/`      | Crea una nueva especie.          | `worldCreator` |
+| PATCH  | `/:id`   | Actualiza una especie existente. | `worldCreator` |
+| DELETE | `/:id`   | Elimina una especie.             | `worldCreator` |
 
 #### Ejemplo de body para POST
 
@@ -73,12 +73,12 @@ Base: `/api/v1/species`
 
 Base: `/api/v1/kings`
 
-| Método | Endpoint | Descripción                 | Acceso                       |
-| ------ | -------- | --------------------------- | ---------------------------- |
-| GET    | `/`      | Obtiene todos los reyes.    | `alphaAdmin`, `worldCreator` |
-| POST   | `/`      | Crea un nuevo rey.          | `worldCreator`               |
-| PATCH  | `/:id`   | Actualiza un rey existente. | `worldCreator`               |
-| DELETE | `/:id`   | Elimina un rey.             | `worldCreator`               |
+| Método | Endpoint | Descripción                 | Acceso         |
+| ------ | -------- | --------------------------- | -------------- |
+| GET    | `/`      | Obtiene todos los reyes.    | Libre          |
+| POST   | `/`      | Crea un nuevo rey.          | `worldCreator` |
+| PATCH  | `/:id`   | Actualiza un rey existente. | `worldCreator` |
+| DELETE | `/:id`   | Elimina un rey.             | `worldCreator` |
 
 #### Ejemplo de body para POST
 
@@ -96,16 +96,16 @@ Base: `/api/v1/kings`
 
 Base: `/api/v1/converts`
 
-| Método | Endpoint            | Descripción                                                                     | Acceso                                        |
-| ------ | ------------------- | ------------------------------------------------------------------------------- | --------------------------------------------- |
-| GET    | `/`                 | Obtiene todos los convertidos (populate con especie y rey).                     | `alphaAdmin`, `worldCreator`                  |
-| GET    | `/kingArmy/:king`   | Obtiene todos los convertidos pertenecientes a un rey.                          | `alphaAdmin`, `worldCreator`, `convertedUser` |
-| GET    | `/:id`              | Obtiene un convertido por su ID.                                                | Propietario, `alphaAdmin`, `worldCreator`     |
-| POST   | `/register`         | Crea un nuevo convertido (solo usuarios autenticados).                          | `convertedUser`, `alphaAdmin`, `worldCreator` |
-| POST   | `/register/byAdmin` | Crea un nuevo convertido (solo administradores).                                | `alphaAdmin`, `worldCreator`                  |
-| POST   | `/login`            | Inicia sesión y devuelve el token JWT.                                          | Libre                                         |
-| PATCH  | `/:id`              | Actualiza datos de un convertido (el propio usuario o un admin pueden hacerlo). | Propietario, `alphaAdmin`, `worldCreator`     |
-| DELETE | `/:id`              | Elimina un usuario (el propio convertido o un admin pueden hacerlo).            | Propietario, `alphaAdmin`, `worldCreator`     |
+| Método | Endpoint            | Descripción                                                                     | Acceso                    |
+| ------ | ------------------- | ------------------------------------------------------------------------------- | ------------------------- |
+| GET    | `/`                 | Obtiene todos los convertidos (populate con especie y rey).                     | Libre                     |
+| GET    | `/kingArmy/:king`   | Obtiene todos los convertidos pertenecientes a un rey.                          | Libre                     |
+| GET    | `/:id`              | Obtiene un convertido por su ID.                                                | Libre                     |
+| POST   | `/register`         | Crea un nuevo convertido (solo usuarios autenticados).                          | `convertedUser`           |
+| POST   | `/register/byAdmin` | Crea un nuevo convertido (solo administradores).                                | `alphaAdmin`              |
+| POST   | `/login`            | Inicia sesión y devuelve el token JWT.                                          | Libre                     |
+| PATCH  | `/:id`              | Actualiza datos de un convertido (el propio usuario o un admin pueden hacerlo). | Propietario, `alphaAdmin` |
+| DELETE | `/:id`              | Elimina un usuario (el propio convertido o un admin pueden hacerlo).            | Propietario, `alphaAdmin` |
 
 #### Ejemplo de body para registro
 
@@ -122,17 +122,21 @@ Base: `/api/v1/converts`
 
 Base: `/api/v1/worldCreators`
 
-| Método | Endpoint | Descripción                        | Acceso         |
-| ------ | -------- | ---------------------------------- | -------------- |
-| GET    | `/`      | Obtiene los perfiles worldCreator. | `worldCreator` |
-| POST   | `/login` | Inicia sesión y genera token JWT.  | Libre          |
+| Método | Endpoint    | Descripción                                                                          | Acceso         |
+| ------ | ----------- | ------------------------------------------------------------------------------------ | -------------- |
+| GET    | `/`         | Obtiene los perfiles worldCreator.                                                   | Libre          |
+| POST   | `/login`    | Inicia sesión y genera token JWT.                                                    | Libre          |
+| POST   | `/register` | Crea un nuevo world Creator (solo worldCreators).                                    | `worldCreator` |
+| PATCH  | `/:id`      | Actualiza datos de un World Creator. No puede modificar su rol (solo worldCreators). | `worldCreator` |
+| POST   | `/:id`      | Elimina al World Creator escogido.(solo worldCreators).                              | `worldCreator` |
 
 #### Ejemplo de body para login
 
 ```json
 {
   "userName": "Aetherion",
-  "password": "GenesisCore123"
+  "password": "GenesisCore123",
+  "role": "worldCreator"
 }
 ```
 
@@ -142,7 +146,7 @@ Base: `/api/v1/worldCreators`
 
 - **convertedUser** → Puede crear nuevos usuarios de su misma especie.
 - **alphaAdmin** → Puede crear, modificar o eliminar cualquier usuario.
-- **worldCreator** → Rol supremo, puede alterar cualquier colección o entidad.
+- **worldCreator** → Rol supremo, puede alterar las especies y reyes.
 
 Los tokens JWT se generan al iniciar sesión y deben incluirse en el header:
 

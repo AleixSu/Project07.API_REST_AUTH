@@ -11,7 +11,10 @@ const getWorldCreators = async (req, res, next) => {
       return res.status(200).json(worldCreators)
     }
   } catch (error) {
-    return res.status(400).json(error)
+    console.log(error)
+    return res
+      .status(400)
+      .json('Something went wrong. Our most sincere apology')
   }
 }
 
@@ -31,8 +34,80 @@ const loginWorldCreator = async (req, res, next) => {
       return res.status(400).json('User or password incorrect')
     }
   } catch (error) {
-    return res.status(400).json(error)
+    console.log(error)
+    return res
+      .status(400)
+      .json('Something went wrong. Our most sincere apology')
   }
 }
 
-module.exports = { getWorldCreators, loginWorldCreator }
+const registerWorldCreator = async (req, res, next) => {
+  try {
+    const newWorldCreator = new WorldCreator(req.body)
+    const duplicated = await WorldCreator.findOne({
+      userName: req.body.userName
+    })
+    if (duplicated)
+      return res.status(400).json('This worldCreator already exists')
+
+    const worldCreatorSaved = await newWorldCreator.save()
+    return res.status(201).json(worldCreatorSaved)
+  } catch (error) {
+    console.log(error)
+    return res
+      .status(400)
+      .json('Something went wrong. Our most sincere apology')
+  }
+}
+const updateWorldCreator = async (req, res, next) => {
+  try {
+    const { id } = req.params
+    const updateData = { userName: req.body.userName, role: 'worldCreator' }
+    if (req.body.password) {
+      updateData.password = bcrypt.hashSync(req.body.password, 10)
+    }
+
+    const worldCreatorUpdated = await Converted.findByIdAndUpdate(
+      id,
+      updateData,
+      {
+        new: true
+      }
+    )
+    if (!worldCreatorUpdated) {
+      return res.status(404).json('This Worldcreator does not exist')
+    } else {
+      return res.status(200).json(worldCreatordUpdated)
+    }
+  } catch (error) {
+    console.log(error)
+    return res
+      .status(400)
+      .json('Something went wrong. Our most sincere apology')
+  }
+}
+
+const deleteWorldCreator = async (req, res, next) => {
+  try {
+    const { id } = req.params
+    const worldCreatorDeleted = await WorldCreator.findByIdAndDelete(id)
+    if (!worldCreatorDeleted) {
+      return res.status(404).json('This Worldcreator does not exist')
+    } else {
+      return res.status(200).json(worldCreatorDeleted)
+    }
+  } catch (error) {
+    console.log(error)
+    return res
+      .status(400)
+      .json('Something went wrong. Our most sincere apology')
+  }
+}
+
+module.exports = {
+  getWorldCreators,
+  loginWorldCreator,
+  registerWorldCreator,
+  updateWorldCreator,
+  deleteWorldCreator
+}

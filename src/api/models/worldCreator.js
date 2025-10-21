@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
 
 const worldCreatorSchema = new mongoose.Schema(
   {
@@ -11,6 +12,11 @@ const worldCreatorSchema = new mongoose.Schema(
     collection: 'worldCreators'
   }
 )
+
+worldCreatorSchema.pre('save', function (next) {
+  this.password = bcrypt.hashSync(this.password, 10)
+  next()
+})
 
 const WorldCreator = mongoose.model(
   'worldCreators',

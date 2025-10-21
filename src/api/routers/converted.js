@@ -20,8 +20,16 @@ const convertsRoutes = require('express').Router()
 convertsRoutes.get('/', getUsers)
 convertsRoutes.get('/kingArmy/:king', getKingArmy)
 convertsRoutes.get('/:id', getUserByID)
-convertsRoutes.post('/register', isConvertedUser, register)
-convertsRoutes.post('/register/byAdmin', [isAlphaAdmin], registerByAdmin)
+convertsRoutes.post(
+  '/register',
+  [isAuth, allowRoles('convertedUser')],
+  register
+)
+convertsRoutes.post(
+  '/register/byAdmin',
+  [isAuth, allowRoles('alphaAdmin')],
+  registerByAdmin
+)
 convertsRoutes.post('/login', login)
 convertsRoutes.patch(
   '/:id',

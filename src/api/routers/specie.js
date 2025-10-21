@@ -1,4 +1,4 @@
-const { isWorldCreator } = require('../../middlewares/auth')
+const { isWorldCreator, isAuth, allowRoles } = require('../../middlewares/auth')
 const {
   getSpecies,
   postSpecie,
@@ -9,8 +9,8 @@ const {
 const speciesRoutes = require('express').Router()
 
 speciesRoutes.get('/', getSpecies)
-speciesRoutes.post('/', isWorldCreator, postSpecie)
-speciesRoutes.patch('/:id', isWorldCreator, updateSpecie)
-speciesRoutes.delete('/:id', isWorldCreator, deleteSpecie)
+speciesRoutes.post('/', [isAuth, allowRoles('worldCreator')], postSpecie)
+speciesRoutes.patch('/:id', [isAuth, allowRoles('worldCreator')], updateSpecie)
+speciesRoutes.delete('/:id', [isAuth, allowRoles('worldCreator')], deleteSpecie)
 
 module.exports = speciesRoutes

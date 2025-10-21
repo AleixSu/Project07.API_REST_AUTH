@@ -9,7 +9,10 @@ const getSpecies = async (req, res, next) => {
       return res.status(200).json(species)
     }
   } catch (error) {
-    return res.status(400).json(error)
+    console.log(error)
+    return res
+      .status(400)
+      .json('Something went wrong. Our most sincere apology')
   }
 }
 
@@ -20,7 +23,10 @@ const postSpecie = async (req, res, next) => {
     const specieCreated = await newSpecie.save()
     return res.status(201).json(specieCreated)
   } catch (error) {
-    return res.status(400).json(error)
+    console.log(error)
+    return res
+      .status(400)
+      .json('Something went wrong. Our most sincere apology')
   }
 }
 
@@ -32,7 +38,10 @@ const updateSpecie = async (req, res, next) => {
     })
     return res.status(200).json(specieUpdated)
   } catch (error) {
-    return res.status(400).json(error)
+    console.log(error)
+    return res
+      .status(400)
+      .json('Something went wrong. Our most sincere apology')
   }
 }
 
@@ -43,7 +52,10 @@ const deleteSpecie = async (req, res, next) => {
     const specieDeleted = await Specie.findByIdAndDelete(id)
     return res.status(200).json(specieDeleted)
   } catch (error) {
-    return res.status(400).json(error)
+    console.log(error)
+    return res
+      .status(400)
+      .json('Something went wrong. Our most sincere apology')
   }
 }
 

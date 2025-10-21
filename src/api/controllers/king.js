@@ -1,11 +1,18 @@
 const King = require('../models/king')
 
 const getKings = async (req, res, next) => {
-  const kings = await King.find().populate('specie')
-  if (kings.length === 0) {
-    return res.status(400).json('Any king has been found')
-  } else {
-    return res.status(200).json(kings)
+  try {
+    const kings = await King.find().populate('specie')
+    if (kings.length === 0) {
+      return res.status(400).json('Any king has been found')
+    } else {
+      return res.status(200).json(kings)
+    }
+  } catch (error) {
+    console.log(error)
+    return res
+      .status(400)
+      .json('Something went wrong. Our most sincere apology')
   }
 }
 
@@ -16,7 +23,10 @@ const postKing = async (req, res, next) => {
     const kingCreated = await newKing.save()
     return res.status(201).json(kingCreated)
   } catch (error) {
-    return res.status(401).json(error)
+    console.log(error)
+    return res
+      .status(400)
+      .json('Something went wrong. Our most sincere apology')
   }
 }
 const updateKing = async (req, res, next) => {
@@ -27,7 +37,10 @@ const updateKing = async (req, res, next) => {
     })
     return res.status(200).json(kingUpdated)
   } catch (error) {
-    return res.status(400).json(error)
+    console.log(error)
+    return res
+      .status(400)
+      .json('Something went wrong. Our most sincere apology')
   }
 }
 
@@ -38,7 +51,10 @@ const deleteKing = async (req, res, next) => {
     const kingDeleted = await King.findByIdAndDelete(id)
     return res.status(200).json(kingDeleted)
   } catch (error) {
-    return res.status(401).json(error)
+    console.log(error)
+    return res
+      .status(400)
+      .json('Something went wrong. Our most sincere apology')
   }
 }
 
