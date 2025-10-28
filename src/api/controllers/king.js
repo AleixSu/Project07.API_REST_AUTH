@@ -2,7 +2,7 @@ const King = require('../models/king')
 
 const getKings = async (req, res, next) => {
   try {
-    const kings = await King.find().populate('specie')
+    const kings = await King.find().populate('specie').lean()
     if (kings.length === 0) {
       return res.status(400).json('Any king has been found')
     } else {

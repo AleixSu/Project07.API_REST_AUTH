@@ -5,15 +5,25 @@ const { verifyJwt } = require('../utils/token/jwt')
 const isAuth = async (req, res, next) => {
   try {
     const token = req.headers.authorization
-    const parsedToken = token.replace('Bearer ', '')
+    if (!token) throw new Error('No token provided')
 
+    const parsedToken = token.replace('Bearer ', '')
     const { id } = verifyJwt(parsedToken)
 
-    const converted = await Converted.findById(id)
-    converted.password = null
-    req.user = converted
+    let user = await Converted.findById(id)
+    if (!user) {
+      user = await WorldCreator.findById(id)
+    }
+    if (!user) {
+      throw new Error('User not found')
+    }
+
+    user.password = null
+    req.user = user
+
     next()
   } catch (error) {
+    console.error('Auth error:', error.message)
     return res.status(401).json('You have no power here')
   }
 }
@@ -27,4 +37,5 @@ const allowRoles =
       return res.status(401).json('You have no power here')
     }
   }
+
 module.exports = { isAuth, allowRoles }

@@ -2,7 +2,7 @@ const Specie = require('../models/specie')
 
 const getSpecies = async (req, res, next) => {
   try {
-    const species = await Specie.find()
+    const species = await Specie.find().lean()
     if (species.length === 0) {
       return res.status(400).json('Any specie has been found')
     } else {

@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt')
 
 const getWorldCreators = async (req, res, next) => {
   try {
-    const worldCreators = await WorldCreator.find()
+    const worldCreators = await WorldCreator.find().select('-password').lean()
     if (worldCreators.length === 0) {
       return res.status(404).json("There's no worldCreators to be found")
     } else {
@@ -67,7 +67,7 @@ const updateWorldCreator = async (req, res, next) => {
       updateData.password = bcrypt.hashSync(req.body.password, 10)
     }
 
-    const worldCreatorUpdated = await Converted.findByIdAndUpdate(
+    const worldCreatorUpdated = await WorldCreator.findByIdAndUpdate(
       id,
       updateData,
       {
@@ -77,7 +77,7 @@ const updateWorldCreator = async (req, res, next) => {
     if (!worldCreatorUpdated) {
       return res.status(404).json('This Worldcreator does not exist')
     } else {
-      return res.status(200).json(worldCreatordUpdated)
+      return res.status(200).json(worldCreatorUpdated)
     }
   } catch (error) {
     console.log(error)

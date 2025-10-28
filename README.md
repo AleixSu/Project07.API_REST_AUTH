@@ -128,7 +128,7 @@ Base: `/api/v1/worldCreators`
 | POST   | `/login`    | Inicia sesión y genera token JWT.                                                    | Libre          |
 | POST   | `/register` | Crea un nuevo world Creator (solo worldCreators).                                    | `worldCreator` |
 | PATCH  | `/:id`      | Actualiza datos de un World Creator. No puede modificar su rol (solo worldCreators). | `worldCreator` |
-| POST   | `/:id`      | Elimina al World Creator escogido.(solo worldCreators).                              | `worldCreator` |
+| DELETE | `/:id`      | Elimina al World Creator escogido.(solo worldCreators).                              | `worldCreator` |
 
 #### Ejemplo de body para login
 

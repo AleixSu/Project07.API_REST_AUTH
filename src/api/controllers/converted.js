@@ -4,7 +4,11 @@ const bcrypt = require('bcrypt')
 
 const getUsers = async (req, res, next) => {
   try {
-    const users = await Converted.find().populate('king').populate('specie')
+    const users = await Converted.find()
+      .select('-password') //**
+      .populate('king')
+      .populate('specie')
+      .lean()
     if (users.length === 0) {
       return res.status(404).json("There's no converts to be found")
     } else {
@@ -22,8 +26,10 @@ const getUserByID = async (req, res, next) => {
   try {
     const { id } = req.params
     const user = await Converted.findById(id)
+      .select('-password')
       .populate('king')
       .populate('specie')
+      .lean()
     if (!user) {
       return res.status(404).json('This converted does not exist')
     } else {
@@ -41,6 +47,7 @@ const getKingArmy = async (req, res, next) => {
   try {
     const { king } = req.params
     const army = await Converted.find({ king })
+      .select('-password')
       .populate('king')
       .populate('specie')
     if (army.length === 0) {
@@ -188,3 +195,33 @@ module.exports = {
   deleteConverted,
   registerByAdmin
 }
+
+//!select() y lean():
+
+//todo SELECT:
+
+//* Select se usa para incluir o excluir campos al ahcer consultas a la base de datos:
+//* Formatos:
+//?         - Exclusión:
+//                  - .select('-password') -> En este, al usar '-' se escluyiría el password. El resto
+//                                            de campos se devoleran.
+
+//?         - Inclusión:
+//                  - .select('name email role') --> En este, solo devolvería los campos mencionados //
+//                                                   ademas del _id ya que se incluye por defecto a
+//                                                   menos que lo excluyamos con '-'.
+
+//todo LEAN:
+
+//* Lean se usa para devolver los datos  convertidos en ojbetos JS planos en lugar de instancias completas de mongoose.Al no usar lean() la info incluye métodos internos ademas de propiedades adicionales (metadatos, getters, etc..). esto consume más memoria y CPU. Es importante utilizar este lean SOLO cuando necesites consultar y leer los datos. EVITAR USAR LEAN en procesos donde se modificque el documento y luego se guarde.
+//*Regla práctica:
+
+//      - GET → siempre .lean()
+
+//      - DELETE → .lean() salvo que necesites triggers de Mongoose
+
+//      - PATCH / PUT → .lean() si no reusas el documento
+
+//      - POST → no aplica (no lees datos previos)
+
+//*Te aporta mayor velocidad, menor consumo y respuestas más limpias.
